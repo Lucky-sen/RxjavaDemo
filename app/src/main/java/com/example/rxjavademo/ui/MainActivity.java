@@ -1,9 +1,14 @@
-package com.example.rxjavademo;
+package com.example.rxjavademo.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.rxjavademo.R;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -12,15 +17,20 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private final  String TAG = "RxJava";
+    private final  String TAG = "MainActivity";
+
+    private Button btnOne;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        testJust();
+        btnOne = findViewById(R.id.btn_one);
+        btnOne.setOnClickListener(this);
+
     }
 
     private void testCreate(){
@@ -81,5 +91,15 @@ public class MainActivity extends AppCompatActivity {
                Log.d(TAG, "完成");
            }
        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_one:
+                Intent intent = new Intent(MainActivity.this,DemoOneActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
