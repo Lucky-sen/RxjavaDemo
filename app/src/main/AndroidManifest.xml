@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.DemoOneActivity"/>
+        <activity android:name=".ui.CustomViewActivity"/>
     </application>
 
 </manifest>

@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final  String TAG = "MainActivity";
 
     private Button btnOne;
+    private Button btnView;
 
 
     @Override
@@ -29,7 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnOne = findViewById(R.id.btn_one);
+        btnView = findViewById(R.id.btn_view);
         btnOne.setOnClickListener(this);
+        btnView.setOnClickListener(this);
 
     }
 
@@ -99,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_one:
                 Intent intent = new Intent(MainActivity.this,DemoOneActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.btn_view:
+                Intent intent1 = new Intent(MainActivity.this,CustomViewActivity.class);
+                startActivity(intent1);
                 break;
         }
     }
