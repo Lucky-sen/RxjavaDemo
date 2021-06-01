@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".ui.DemoOneActivity"/>
         <activity android:name=".ui.CustomViewActivity"/>
+        <activity android:name=".ui.TouchTestActivity"/>
     </application>
 
 </manifest>

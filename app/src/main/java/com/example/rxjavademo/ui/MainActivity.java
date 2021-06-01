@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button btnOne;
     private Button btnView;
+    private Button btnDispatch;
 
 
     @Override
@@ -31,8 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         btnOne = findViewById(R.id.btn_one);
         btnView = findViewById(R.id.btn_view);
+        btnDispatch = findViewById(R.id.btn_dispatch);
         btnOne.setOnClickListener(this);
         btnView.setOnClickListener(this);
+        btnDispatch.setOnClickListener(this);
 
     }
 
@@ -106,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_view:
                 Intent intent1 = new Intent(MainActivity.this,CustomViewActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.btn_dispatch:
+                Intent intent2 = new Intent(MainActivity.this,TouchTestActivity.class);
+                startActivity(intent2);
                 break;
         }
     }
