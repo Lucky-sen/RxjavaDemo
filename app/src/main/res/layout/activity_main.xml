@@ -44,4 +44,14 @@
         android:layout_marginTop="20dp"
         />
 
+    <Button
+        android:id="@+id/btn_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="free test"
+        android:layout_marginTop="20dp"
+        />
+
+
+
 </LinearLayout>

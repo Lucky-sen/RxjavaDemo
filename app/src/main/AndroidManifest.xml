@@ -22,6 +22,7 @@
         <activity android:name=".ui.CustomViewActivity"/>
         <activity android:name=".ui.TouchTestActivity"/>
         <activity android:name=".ui.RxTestActivity"/>
+        <activity android:name=".ui.MyNetWorkTestActivity"/>
     </application>
 
 </manifest>

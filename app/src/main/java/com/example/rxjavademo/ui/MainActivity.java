@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnView;
     private Button btnDispatch;
     private Button btnRxjava;
+    private Button btnFree;
 
 
     @Override
@@ -35,10 +36,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnView = findViewById(R.id.btn_view);
         btnDispatch = findViewById(R.id.btn_dispatch);
         btnRxjava = findViewById(R.id.btn_rxjava);
+        btnFree = findViewById(R.id.btn_free);
+
         btnOne.setOnClickListener(this);
         btnView.setOnClickListener(this);
         btnDispatch.setOnClickListener(this);
         btnRxjava.setOnClickListener(this);
+        btnFree.setOnClickListener(this);
 
     }
 
@@ -120,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_rxjava:
                 Intent intent3 = new Intent(MainActivity.this,RxTestActivity.class);
                 startActivity(intent3);
+                break;
+            case R.id.btn_free:
+                Intent intent4 = new Intent(MainActivity.this,MyNetWorkTestActivity.class);
+                startActivity(intent4);
                 break;
         }
     }

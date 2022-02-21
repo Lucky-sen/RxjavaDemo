@@ -1,8 +1,8 @@
 package com.example.rxjavademo.network;
 
-import com.example.rxjavademo.bean.VoucherLabelBean;
+import com.example.rxjavademo.bean.BaseBean;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 
 /**
@@ -14,5 +14,5 @@ public interface Api {
     String API_URL = "https://ask-test.ihicon-wh.com/api/";
 
     @GET("order-front/voucher/class/list")
-    Call<VoucherLabelBean> getVoucherLabels();
+    Observable<BaseBean<String>> getList();
 }
