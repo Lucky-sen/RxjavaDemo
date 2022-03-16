@@ -12,9 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RxJavaDemo">
         <activity android:name=".ui.MainActivity">
+        </activity>
+
+        <activity android:name=".ui.SplashActivity"
+                  android:theme="@style/myTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

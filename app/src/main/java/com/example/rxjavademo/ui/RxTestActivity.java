@@ -12,6 +12,7 @@ import com.example.rxjavademo.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Notification;
@@ -45,6 +46,8 @@ public class RxTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rxjava);
         errorReturnTest();
     }
+
+
 
     // create  操作符
     // 传入参数： OnSubscribe 对象
@@ -1285,5 +1288,29 @@ public class RxTestActivity extends AppCompatActivity {
 
                 });
     }
+
+    Flow.Subscriber<Integer> subscriber = new Flow.Subscriber<Integer>() {
+
+
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+
+        }
+
+        @Override
+        public void onNext(Integer item) {
+
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
 
 }
