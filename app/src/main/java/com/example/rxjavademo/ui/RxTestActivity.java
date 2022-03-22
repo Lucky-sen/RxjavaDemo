@@ -1,13 +1,18 @@
 package com.example.rxjavademo.ui;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rxjavademo.R;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +45,22 @@ public class RxTestActivity extends AppCompatActivity {
 
     private final static String TAG = "dss";
 
+    private RxPermissions mRxPermissions;
+
+    private Button btnPermission;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rxjava);
-        errorReturnTest();
+        btnPermission = findViewById(R.id.btn_permission);
+        btnPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TestTwo();
+            }
+        });
+//        TestOne();
     }
 
 
@@ -54,22 +70,83 @@ public class RxTestActivity extends AppCompatActivity {
     // 当 Observable 被订阅时，OnSubscribe 的 call() 方法会自动被调用，即事件序列就会依照设定依次被触发
     // 即观察者会依次调用对应事件的复写方法从而响应事件
     // 从而实现由被观察者向观察者的事件传递 & 被观察者调用了观察者的回调方法 ，即观察者模式
-    Observable<Integer> observable = Observable.create(new ObservableOnSubscribe<Integer>() {
+//    Observable<Integer> observable = Observable.create(new ObservableOnSubscribe<Integer>() {
+//
+//        //2. 在复写的subscribe（）里定义需要发送的事件
+//        @Override
+//        public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
+//            // 通过 ObservableEmitter类对象 产生 & 发送事件
+//            // ObservableEmitter类介绍
+//            // a. 定义：事件发射器
+//            // b. 作用：定义需要发送的事件 & 向观察者发送事件
+//            // 注：建议发送事件前检查观察者的isUnsubscribed状态，以便在没有观察者时，让Observable停止发射数据
+//            observableEmitter.onNext(1);
+//            observableEmitter.onNext(2);
+//            observableEmitter.onNext(3);
+//            observableEmitter.onComplete();
+//        }
+//    });
 
-        //2. 在复写的subscribe（）里定义需要发送的事件
-        @Override
-        public void subscribe(ObservableEmitter<Integer> observableEmitter) throws Exception {
-            // 通过 ObservableEmitter类对象 产生 & 发送事件
-            // ObservableEmitter类介绍
-            // a. 定义：事件发射器
-            // b. 作用：定义需要发送的事件 & 向观察者发送事件
-            // 注：建议发送事件前检查观察者的isUnsubscribed状态，以便在没有观察者时，让Observable停止发射数据
-            observableEmitter.onNext(1);
-            observableEmitter.onNext(2);
-            observableEmitter.onNext(3);
-            observableEmitter.onComplete();
+    private void TestTwo(){
+        mRxPermissions = new RxPermissions(this);
+        if(mRxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && mRxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            Toast.makeText(this,"拥有阅读外部存储空间权限",Toast.LENGTH_SHORT).show();
+        }else {
+            mRxPermissions.setLogging(true);
+//            mRxPermissions.requestEach(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    .subscribe(permission -> {
+//                       if(permission.granted){
+//
+//                       }else if(permission.shouldShowRequestPermissionRationale)
+//                    });
+            mRxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(granted ->{
+                if(granted){
+                    Log.d(TAG,"授权成功");
+                }else {
+                    Log.d(TAG,"授权失败");
+                }
+            });
         }
-    });
+    }
+
+    private void TestOne(){
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                e.onNext(1);
+                e.onNext(2);
+                e.onNext(3);
+                e.onComplete();
+                e.onNext(4);  //会发送，但不会接受
+            }
+        }).subscribe(new Observer<Integer>() {
+            private Disposable mDisposable;
+            @Override
+            public void onSubscribe(Disposable disposable) {
+                this.mDisposable = disposable; // 可用于切断subscribe流事件的连接
+                Log.d("sssss","开始建立subscribe连接");  //执行顺序在第一位,先建立subscribe连接
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                if(integer == 2){
+                    mDisposable.dispose();
+                    Log.d("sssss","通过mDisposable.dispose()切断连接");
+                }
+                Log.d("ssssss","接收到事件"+integer);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.d("sssss","收到事件队列onError()");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("sssss","收到事件队列onComplete()");
+            }
+        });
+    }
 
     /**
      * create操作符 链式调用
@@ -1289,28 +1366,28 @@ public class RxTestActivity extends AppCompatActivity {
                 });
     }
 
-    Flow.Subscriber<Integer> subscriber = new Flow.Subscriber<Integer>() {
-
-
-        @Override
-        public void onSubscribe(Flow.Subscription subscription) {
-
-        }
-
-        @Override
-        public void onNext(Integer item) {
-
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-
-        }
-
-        @Override
-        public void onComplete() {
-
-        }
-    };
+//    Flow.Subscriber<Integer> subscriber = new Flow.Subscriber<Integer>() {
+//
+//
+//        @Override
+//        public void onSubscribe(Flow.Subscription subscription) {
+//
+//        }
+//
+//        @Override
+//        public void onNext(Integer item) {
+//
+//        }
+//
+//        @Override
+//        public void onError(Throwable throwable) {
+//
+//        }
+//
+//        @Override
+//        public void onComplete() {
+//
+//        }
+//    };
 
 }

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rxjavademo.R;
+import com.example.rxjavademo.network.GzipRequestInterceptor;
 import com.example.rxjavademo.network.Constant;
 import com.example.rxjavademo.network.TestInterceptor;
 
@@ -20,6 +21,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -48,43 +50,28 @@ public class DemoOneActivity extends AppCompatActivity {
         btnRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String getUrl = Constant.baseUrl + Constant.getAllAds;
-                String postUrl = Constant.baseUrl + Constant.postCheckVersion;
-                requestDataByGet(getUrl);
-//                requestByPost(postUrl);
-//                RequestPostByio(postUrl);
-//                requestPostFile();
+//                String url = Constant.baseUrl + Constant.getAllAds;
+                requestByPost();
             }
         });
     }
 
-    /**
-     * get请求
-     *
-     * @param url
-     */
-    private void requestDataByGet(String url) {
-        //step1 构建一个网络类型的实例，一般会将所有的网络请求使用同一个单例对象。
+    private void requestDataByGet(String url){
+        //创建OkHttpClient客户端
+        //OkHttp可以设置调用、连接和读写的超时时间，都是通过OkHttpClient.Builder设置的,同时也可以添加interceptors拦截器,设置缓存
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new TestInterceptor())
-                .addNetworkInterceptor(new TestInterceptor())
-                .build();
-        //step2 构建一个具体的网络请求对象，具体的请求url，请求头，请求体等等。
+                                .addInterceptor(new GzipRequestInterceptor())
+                                .build();
+        //创建请求Request
+        //在request中设置 header请求头
         Request request = new Request.Builder()
                 .get()
                 .url(url)
-                .addHeader("Content-Type", "application/json; charset=utf-8")
-                .addHeader("terminal", "1")
-                .addHeader("timestamp", "1624601441602")
-                .addHeader("appVersion", "2.0.0")
-                .addHeader("appCode", "13")
-                .addHeader("sign", "ad78bab18887414640ec596e43f414076831588d9394ed42e1faa2334759062f")
                 .build();
-
-        //step3 新的call request
+        //通过client和request 创建一个RealCall
         Call call = client.newCall(request);
         Log.e(TAG, "打印出请求的地址URL=" + url);
-        //step4 发送请求
+        //通过call 进行异步网络请求
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -104,22 +91,26 @@ public class DemoOneActivity extends AppCompatActivity {
                 Log.e(TAG, str);
             }
         });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //通过call 进行同步网络请求
+                try {
+                    Response response = call.execute();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-
-    /**
-     * post 请求
-     */
-    private void requestByPost(String url) {
-        //step1 创建客户端
-        OkHttpClient client = new OkHttpClient();
-        //step2 用于描述请求/响应body的内容类型
+    private void requestByPost() {
         MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
-        //step3 创建请求
-        Request request = new Request.Builder().post(RequestBody.create(mediaType, "i am sen"))
-                .url(url)
-                .build();
-
+        Request request = new Request.Builder().post(RequestBody.create(mediaType,"i am sen"))
+                                                .url("https://api.github.com/markdown/raw")
+                                                .build();
+        OkHttpClient client = new OkHttpClient();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -128,93 +119,24 @@ public class DemoOneActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.e(TAG, "code:" + response.code() + "Response body:" + response.body().string());
+                Log.e(TAG,"Response body:" + response.body().string());
                 Headers headers = response.headers();
-                for (int i = 0; i < headers.size(); i++) {
-                    Log.e(TAG, headers.name(i) + ":" + headers.value(i));
+                for(int i=0;i<headers.size();i++){
+                    Log.e(TAG,headers.name(i)+ ":" + headers.value(i));
                 }
             }
         });
     }
 
-    /**
-     * post请求请求流
-     * @param url
-     */
-    private void RequestPostByio(String url){
-        RequestBody requestBody = new RequestBody() {
-            @Override
-            public MediaType contentType() {
-                return MediaType.parse("text/x-markdown; charset=utf-8");
-            }
+    //自定义拦截器
+    private class LoggingIntercepor implements Interceptor{
 
-            @Override
-            public void writeTo(BufferedSink sink) throws IOException {
-                sink.writeUtf8("i am sen");
-            }
-        };
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request= chain.request();
+            Response response = chain.proceed(request);
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, "code:"+ response.code() + "responseBody:"+response.body().toString());
-                for(int i=0;i<response.headers().size();i++){
-                    Log.d(TAG, response.headers().name(i)+":"+response.headers().value(i));
-                }
-            }
-        });
-    }
-
-    /**
-     * 提交文件
-     */
-    private void requestPostFile(){
-        OkHttpClient client = new OkHttpClient();
-        MediaType type = MediaType.parse("text/x-markdown; charset=utf-8");
-        File file = new File("test.md");
-        Request request = new Request.Builder().url("https://api.github.com/markdown/raw")
-                .post(RequestBody.create(type,file))
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG,"code:"+response.code());
-                Log.d(TAG,response.body().toString());
-            }
-        });
-    }
-
-    /**
-     * post提交表单
-     */
-    private void requestPostFrom(){
-        RequestBody requestBody = new FormBody.Builder()
-                .add("params1", "params")
-                .add("params2", "params")
-                .build();
-    }
-
-    /**
-     * 拦截器
-     * ①一类是全局的 interceptor，该类 interceptor 在整个拦截器链中最早被调用，通过 OkHttpClient.Builder#addInterceptor(Interceptor) 传入；
-     * ②另外一类是非网页请求的 interceptor ，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，
-     * 所有的 interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用
-     */
-    private void interceptorTest(){
-
+            return null;
+        }
     }
 }
