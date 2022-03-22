@@ -89,23 +89,27 @@ public class RxTestActivity extends AppCompatActivity {
 
     private void TestTwo(){
         mRxPermissions = new RxPermissions(this);
-        if(mRxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && mRxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            Toast.makeText(this,"拥有阅读外部存储空间权限",Toast.LENGTH_SHORT).show();
+        if(mRxPermissions.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION) && mRxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)){
+            Toast.makeText(this,"拥有网络粗略定位以及gps精确定位权限",Toast.LENGTH_SHORT).show();
         }else {
             mRxPermissions.setLogging(true);
-//            mRxPermissions.requestEach(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    .subscribe(permission -> {
-//                       if(permission.granted){
-//
-//                       }else if(permission.shouldShowRequestPermissionRationale)
-//                    });
-            mRxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(granted ->{
-                if(granted){
-                    Log.d(TAG,"授权成功");
-                }else {
-                    Log.d(TAG,"授权失败");
-                }
-            });
+            mRxPermissions.requestEach(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)
+                    .subscribe(permission -> {
+                       if(permission.granted){
+
+                       }else if(permission.shouldShowRequestPermissionRationale){
+
+                       }else {
+
+                       }
+                    });
+//            mRxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE).subscribe(granted ->{
+//                if(granted){
+//                    Log.d(TAG,"授权成功");
+//                }else {
+//                    Log.d(TAG,"授权失败");
+//                }
+//            });
         }
     }
 
