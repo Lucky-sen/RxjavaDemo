@@ -33,6 +33,10 @@
         <activity android:name=".ui.TouchTestActivity"/>
         <activity android:name=".ui.RxTestActivity"/>
         <activity android:name=".ui.MyNetWorkTestActivity"/>
+        <activity android:name=".ui.TestActivity"/>
+
+        <service android:name=".other.MyService"
+            />
     </application>
 
 </manifest>

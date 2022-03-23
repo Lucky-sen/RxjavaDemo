@@ -1,6 +1,7 @@
 package com.example.rxjavademo.ui;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -60,6 +61,7 @@ public class RxTestActivity extends AppCompatActivity {
                 TestTwo();
             }
         });
+
 //        TestOne();
     }
 
