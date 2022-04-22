@@ -9,6 +9,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rxjavademo.R;
+import com.example.rxjavademo.optimization.RecyclePictureActivity;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -133,7 +134,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent4);
                 break;
             case R.id.btn_test:
-                Intent intent5 = new Intent(MainActivity.this,TestActivity.class);
+//                Intent intent5 = new Intent(MainActivity.this,TestActivity.class);
+//                startActivity(intent5);
+                Intent intent5 = new Intent(MainActivity.this, RecyclePictureActivity.class);
                 startActivity(intent5);
                 break;
         }

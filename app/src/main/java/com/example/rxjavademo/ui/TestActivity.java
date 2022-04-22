@@ -17,6 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.JobIntentService;
 
 import com.example.rxjavademo.R;
+import com.example.rxjavademo.buildermode.Bean;
+import com.example.rxjavademo.buildermode.MyOkhttp;
+import com.example.rxjavademo.mvp.MvpActivity;
 import com.example.rxjavademo.other.MyBroadCastReceiver;
 import com.example.rxjavademo.other.MyService;
 
@@ -107,8 +110,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_test:
 //                startMyService();
                 //bind方式启动
-                Intent intent = new Intent(TestActivity.this, MyService.class);
-                Log.d("dss","返回参数"+ this.bindService(intent, serviceConnection,this.BIND_AUTO_CREATE));
+//                Intent intent = new Intent(TestActivity.this, MyService.class);
+//                Log.d("dss","返回参数"+ this.bindService(intent, serviceConnection,this.BIND_AUTO_CREATE));
+                startActivity(new Intent(TestActivity.this, MvpActivity.class));
                 break;
             case R.id.tv_test:
 //                stopMyService();

@@ -34,6 +34,8 @@
         <activity android:name=".ui.RxTestActivity"/>
         <activity android:name=".ui.MyNetWorkTestActivity"/>
         <activity android:name=".ui.TestActivity"/>
+        <activity android:name=".mvp.MvpActivity"/>
+        <activity android:name=".optimization.RecyclePictureActivity"/>
 
         <service android:name=".other.MyService"
             />
